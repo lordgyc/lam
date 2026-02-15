@@ -1,28 +1,51 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import MenuHeader from '@/components/MenuHeader'
 import CategoryList from '@/components/CategoryList'
 import MenuItems from '@/components/MenuItems'
 import { supabase } from '@/lib/supabase'
 import { Category, Item } from '@/types/database'
+import Image from 'next/image'
 
 export default function Home() {
   const [categories, setCategories] = useState<Category[]>([])
   const [items, setItems] = useState<Item[]>([])
   const [selectedCategory, setSelectedCategory] = useState<string>('')
   const [loading, setLoading] = useState(true)
-  const [restaurantName, setRestaurantName] = useState('La Menu')
+  const [itemsLoading, setItemsLoading] = useState(false)
+  const [logoLoaded, setLogoLoaded] = useState(false)
 
   useEffect(() => {
     fetchData()
+  }, [])
+
+  const fetchItems = useCallback(async (categoryId: string) => {
+    try {
+      setItemsLoading(true)
+      const { data: itemsData, error: itemsError } = await supabase
+        .from('items')
+        .select('*')
+        .eq('cat_id', categoryId)
+        .order('name')
+
+      if (itemsError) throw itemsError
+      // Small delay so animation resets between categories
+      await new Promise(r => setTimeout(r, 150))
+      setItems(itemsData || [])
+    } catch (error) {
+      console.error('Error fetching items:', error)
+      setItems([])
+    } finally {
+      setItemsLoading(false)
+    }
   }, [])
 
   useEffect(() => {
     if (selectedCategory) {
       fetchItems(selectedCategory)
     }
-  }, [selectedCategory])
+  }, [selectedCategory, fetchItems])
 
   async function fetchData() {
     try {
@@ -44,34 +67,22 @@ export default function Home() {
     }
   }
 
-  async function fetchItems(categoryId: string) {
-    try {
-      const { data: itemsData, error: itemsError } = await supabase
-        .from('items')
-        .select('*')
-        .eq('cat_id', categoryId)
-        .order('name')
-
-      if (itemsError) throw itemsError
-
-      setItems(itemsData || [])
-    } catch (error) {
-      console.error('Error fetching items:', error)
-      setItems([])
-    }
-  }
-
   if (loading) {
     return (
       <main className="menu-app">
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
-          alignItems: 'center', 
-          minHeight: '100vh',
-          color: 'var(--text-secondary)'
-        }}>
-          Loading menu...
+        <div className="loading-screen">
+          <div className="loading-logo-wrapper">
+            <Image
+              src="/lamlogo.png"
+              alt="Lambadina Logo"
+              width={80}
+              height={80}
+              style={{ objectFit: 'cover', borderRadius: '50%' }}
+              priority
+            />
+          </div>
+          <div className="loading-spinner" />
+          <p className="loading-text">Loading menu...</p>
         </div>
       </main>
     )
@@ -79,7 +90,43 @@ export default function Home() {
 
   return (
     <main className="menu-app">
-      <MenuHeader restaurantName={restaurantName} />
+      {/* Hero Section */}
+      <div className="hero-section">
+        <div className="hero-bg-pattern" />
+        <div className="hero-content">
+          <div className={`logo-container ${logoLoaded ? 'logo-loaded' : ''}`}>
+            <div className="logo-glow" />
+            <div className="logo-ring" />
+            <div className="logo-wrapper">
+              <Image
+                src="/lamlogo.png"
+                alt="Lambadina Logo"
+                fill
+                sizes="140px"
+                style={{ objectFit: 'cover' }}
+                priority
+                onLoad={() => setLogoLoaded(true)}
+              />
+            </div>
+          </div>
+          <MenuHeader restaurantName="Lambadina" />
+          <div className="hero-divider">
+            <span className="divider-diamond" />
+            <span className="divider-line" />
+            <span className="divider-diamond" />
+          </div>
+        </div>
+        <div className="hero-wave">
+          <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
+            <path
+              d="M0,40 C320,100 620,0 960,50 C1200,85 1360,30 1440,50 L1440,100 L0,100 Z"
+              fill="var(--background)"
+            />
+          </svg>
+        </div>
+      </div>
+
+      {/* Menu Content */}
       {categories.length > 0 && (
         <>
           <CategoryList
@@ -87,10 +134,15 @@ export default function Home() {
             selectedCategory={selectedCategory}
             onSelectCategory={setSelectedCategory}
           />
-          <MenuItems items={items} />
+          <MenuItems items={items} loading={itemsLoading} />
         </>
       )}
+
+      <footer className="menu-footer">
+        <div className="footer-divider" />
+        <p>Lambadina Restaurant</p>
+        <p className="footer-sub">Fresh • Local • Delicious</p>
+      </footer>
     </main>
   )
 }
-
