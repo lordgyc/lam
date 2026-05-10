@@ -41,7 +41,10 @@ function MenuItemCard({
         <div className="menu-item-header">
           <h3 className="menu-item-name">{item.name}</h3>
           <div className="menu-item-actions">
-            <span className="menu-item-price">${item.price.toFixed(2)}</span>
+            <span className="menu-item-price">
+              <span className="currency-label">ETB</span>
+              {item.price.toFixed(2)}
+            </span>
             <span className="menu-item-pick">{selected ? 'Added' : 'Add'}</span>
           </div>
         </div>

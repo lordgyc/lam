@@ -493,6 +493,17 @@ body {
   letter-spacing: 0.02em;
 }
 
+.currency-label {
+  display: inline-block;
+  margin-right: 0.28rem;
+  color: var(--accent-light);
+  font-size: 0.62em;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transform: translateY(-0.05em);
+}
+
 .menu-item-actions {
   display: flex;
   flex-direction: column;

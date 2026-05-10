@@ -177,13 +177,19 @@ export default function Home() {
                 onClick={() => toggleOrderItem(item)}
               >
                 <span>{item.name}</span>
-                <span>${item.price.toFixed(2)}</span>
+                <span>
+                  <span className="currency-label">ETB</span>
+                  {item.price.toFixed(2)}
+                </span>
               </button>
             ))}
           </div>
           <div className="order-note-total">
             <span>Estimated total</span>
-            <strong>${selectedTotal.toFixed(2)}</strong>
+            <strong>
+              <span className="currency-label">ETB</span>
+              {selectedTotal.toFixed(2)}
+            </strong>
           </div>
         </aside>
       )}
