@@ -14,6 +14,8 @@ export default function AdminPage() {
   const [selectedCatId, setSelectedCatId] = useState<number | null>(null);
   const [items, setItems] = useState<Item[]>([]);
   const [loadingItems, setLoadingItems] = useState(false);
+  const [deletingCategoryId, setDeletingCategoryId] = useState<number | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const protect = async () => {
@@ -77,10 +79,45 @@ export default function AdminPage() {
 
   const deleteCategory = async (id: number) => {
     if (!confirm("Delete this category and all its items?")) return;
-    await supabase.from("items").delete().eq("cat_id", id);
-    await supabase.from("category").delete().eq("id", id);
+
+    setDeletingCategoryId(id);
+    setErrorMessage(null);
+
+    const { error: itemsError } = await supabase
+      .from("items")
+      .delete()
+      .eq("cat_id", id);
+
+    if (itemsError) {
+      setDeletingCategoryId(null);
+      setErrorMessage(itemsError.message);
+      return;
+    }
+
+    const { data: deletedCategory, error: categoryError } = await supabase
+      .from("category")
+      .delete()
+      .eq("id", id)
+      .select("id")
+      .maybeSingle();
+
+    setDeletingCategoryId(null);
+
+    if (categoryError) {
+      setErrorMessage(categoryError.message);
+      return;
+    }
+
+    if (!deletedCategory) {
+      setErrorMessage("Category was not deleted. Please check your admin permissions and try again.");
+      return;
+    }
+
     setCategories((p) => p.filter((c) => c.id !== id));
-    if (selectedCatId === id) setSelectedCatId(null);
+    if (selectedCatId === id) {
+      setSelectedCatId(null);
+      setItems([]);
+    }
   };
 
   return (
@@ -96,10 +133,17 @@ export default function AdminPage() {
             <button
               className={`cat-btn ${selectedCatId === c.id ? "active" : ""}`}
               onClick={() => setSelectedCatId(c.id)}
+              disabled={deletingCategoryId === c.id}
             >
               {c.name}
             </button>
-            <button className="del-btn" onClick={() => deleteCategory(c.id)}>×</button>
+            <button
+              className="del-btn"
+              onClick={() => deleteCategory(c.id)}
+              disabled={deletingCategoryId === c.id}
+            >
+              {deletingCategoryId === c.id ? "..." : "×"}
+            </button>
           </div>
         ))}
 
@@ -109,6 +153,7 @@ export default function AdminPage() {
       </aside>
 
       <main>
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
         {!selectedCatId && <p>Select a category 👈</p>}
         {loadingItems && <p>Loading…</p>}
 
@@ -210,6 +255,11 @@ export default function AdminPage() {
           background: #4f46e5;
         }
 
+        aside button:disabled {
+          cursor: not-allowed;
+          opacity: 0.6;
+        }
+
         .del-btn {
           background: #331111 !important;
           color: #ff4444 !important;
@@ -229,6 +279,15 @@ export default function AdminPage() {
           flex: 1;
           padding: 2rem;
           overflow-y: auto;
+        }
+
+        .error-message {
+          background: #441111;
+          border: 1px solid #7f1d1d;
+          border-radius: 6px;
+          color: #fecaca;
+          margin: 0 0 1rem;
+          padding: 0.75rem 1rem;
         }
 
         .item-row {
