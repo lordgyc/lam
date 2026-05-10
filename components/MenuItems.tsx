@@ -1,30 +1,52 @@
 'use client'
 
 import { Item } from '@/types/database'
-import { useState } from 'react'
 
 interface MenuItemsProps {
   items: Item[]
   loading?: boolean
+  selectedItemIds?: string[]
+  onToggleItem?: (item: Item) => void
 }
 
-function MenuItemCard({ item, index }: { item: Item; index: number }) {
-  const [tapped, setTapped] = useState(false)
+function MenuItemCard({
+  item,
+  index,
+  selected,
+  onToggle,
+}: {
+  item: Item
+  index: number
+  selected: boolean
+  onToggle?: (item: Item) => void
+}) {
 
   return (
     <div
-      className={`menu-item-card ${tapped ? 'menu-item-card-tapped' : ''}`}
+      className={`menu-item-card ${selected ? 'menu-item-card-tapped' : ''}`}
       style={{ animationDelay: `${index * 70}ms` }}
-      onClick={() => setTapped(!tapped)}
+      onClick={() => onToggle?.(item)}
+      role="button"
+      aria-pressed={selected}
+      tabIndex={0}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault()
+          onToggle?.(item)
+        }
+      }}
     >
       <div className="menu-item-accent-line" />
       <div className="menu-item-body">
         <div className="menu-item-header">
           <h3 className="menu-item-name">{item.name}</h3>
-          <span className="menu-item-price">${item.price.toFixed(2)}</span>
+          <div className="menu-item-actions">
+            <span className="menu-item-price">${item.price.toFixed(2)}</span>
+            <span className="menu-item-pick">{selected ? 'Added' : 'Add'}</span>
+          </div>
         </div>
         {item.desc && (
-          <p className={`menu-item-description ${tapped ? 'description-expanded' : ''}`}>
+          <p className={`menu-item-description ${selected ? 'description-expanded' : ''}`}>
             {item.desc}
           </p>
         )}
@@ -33,7 +55,12 @@ function MenuItemCard({ item, index }: { item: Item; index: number }) {
   )
 }
 
-export default function MenuItems({ items, loading }: MenuItemsProps) {
+export default function MenuItems({
+  items,
+  loading,
+  selectedItemIds = [],
+  onToggleItem,
+}: MenuItemsProps) {
   if (loading) {
     return (
       <section className="menu-items-section">
@@ -77,7 +104,13 @@ export default function MenuItems({ items, loading }: MenuItemsProps) {
         <div className="items-count">{items.length} item{items.length !== 1 ? 's' : ''}</div>
         <div className="menu-items-grid">
           {items.map((item, index) => (
-            <MenuItemCard key={item.id} item={item} index={index} />
+            <MenuItemCard
+              key={item.id}
+              item={item}
+              index={index}
+              selected={selectedItemIds.includes(item.id)}
+              onToggle={onToggleItem}
+            />
           ))}
         </div>
       </div>

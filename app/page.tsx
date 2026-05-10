@@ -15,6 +15,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const [itemsLoading, setItemsLoading] = useState(false)
   const [logoLoaded, setLogoLoaded] = useState(false)
+  const [selectedItems, setSelectedItems] = useState<Item[]>([])
 
   useEffect(() => {
     fetchData()
@@ -66,6 +67,19 @@ export default function Home() {
       setLoading(false)
     }
   }
+
+  const toggleOrderItem = (item: Item) => {
+    setSelectedItems((current) => {
+      const isSelected = current.some((selectedItem) => selectedItem.id === item.id)
+      if (isSelected) {
+        return current.filter((selectedItem) => selectedItem.id !== item.id)
+      }
+
+      return [...current, item]
+    })
+  }
+
+  const selectedTotal = selectedItems.reduce((total, item) => total + item.price, 0)
 
   if (loading) {
     return (
@@ -134,8 +148,44 @@ export default function Home() {
             selectedCategory={selectedCategory}
             onSelectCategory={setSelectedCategory}
           />
-          <MenuItems items={items} loading={itemsLoading} />
+          <MenuItems
+            items={items}
+            loading={itemsLoading}
+            selectedItemIds={selectedItems.map((item) => item.id)}
+            onToggleItem={toggleOrderItem}
+          />
         </>
+      )}
+
+      {selectedItems.length > 0 && (
+        <aside className="order-note" aria-label="Temporary order note">
+          <div className="order-note-header">
+            <div>
+              <p className="order-note-label">Order note</p>
+              <strong>{selectedItems.length} selected</strong>
+            </div>
+            <button type="button" onClick={() => setSelectedItems([])}>
+              Clear
+            </button>
+          </div>
+          <div className="order-note-list">
+            {selectedItems.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                className="order-note-item"
+                onClick={() => toggleOrderItem(item)}
+              >
+                <span>{item.name}</span>
+                <span>${item.price.toFixed(2)}</span>
+              </button>
+            ))}
+          </div>
+          <div className="order-note-total">
+            <span>Estimated total</span>
+            <strong>${selectedTotal.toFixed(2)}</strong>
+          </div>
+        </aside>
       )}
 
       <footer className="menu-footer">

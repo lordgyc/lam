@@ -65,6 +65,7 @@ body {
   min-height: 100vh;
   background: var(--background);
   position: relative;
+  padding-bottom: 0;
 }
 
 /* ============================================
@@ -492,6 +493,33 @@ body {
   letter-spacing: 0.02em;
 }
 
+.menu-item-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.menu-item-pick {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  color: var(--text-muted);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  padding: 0.35rem 0.55rem;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+}
+
+.menu-item-card-tapped .menu-item-pick {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #17120a;
+}
+
 .menu-item-description {
   font-size: 0.82rem;
   line-height: 1.6;
@@ -644,6 +672,111 @@ body {
   font-size: 0.65rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
+}
+
+/* ============================================
+   TEMPORARY ORDER NOTE
+   ============================================ */
+
+.order-note {
+  position: sticky;
+  bottom: 1rem;
+  z-index: 120;
+  width: calc(100% - 2rem);
+  margin: 0 auto 1rem;
+  border: 1px solid var(--border-accent);
+  border-radius: 18px;
+  background: rgba(20, 20, 32, 0.96);
+  box-shadow: var(--shadow-lg), var(--shadow-glow);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  overflow: hidden;
+  animation: orderNoteIn 0.25s ease-out;
+}
+
+.order-note-header,
+.order-note-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+}
+
+.order-note-header {
+  border-bottom: 1px solid var(--border);
+}
+
+.order-note-label {
+  color: var(--text-muted);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+}
+
+.order-note-header strong,
+.order-note-total strong {
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+.order-note-header button {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.45rem 0.7rem;
+}
+
+.order-note-list {
+  display: flex;
+  flex-direction: column;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.order-note-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font: inherit;
+  padding: 0.7rem 1rem;
+  text-align: left;
+}
+
+.order-note-item span:first-child {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.order-note-total {
+  background: rgba(226, 168, 75, 0.08);
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+@keyframes orderNoteIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ============================================
