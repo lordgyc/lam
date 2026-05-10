@@ -137,7 +137,7 @@ export default function AdminPage() {
           <button className="add-btn" onClick={addCategory}>Add</button>
         </div>
 
-        <div className="category-list">
+        <div className="admin-category-list">
           {categories.map((c) => (
             <div key={c.id} className={`cat-row ${selectedCatId === c.id ? "active" : ""}`}>
               <button
@@ -232,16 +232,19 @@ export default function AdminPage() {
             #0d0d16;
           color: #f4efe6;
           font-family: Inter, system-ui, sans-serif;
+          overflow: hidden;
         }
 
         aside {
-          width: 300px;
+          width: 280px;
+          min-width: 280px;
           background: rgba(20, 20, 32, 0.92);
           border-right: 1px solid rgba(255, 255, 255, 0.08);
-          padding: 1.5rem;
+          padding: 1.1rem;
           display: flex;
           flex-direction: column;
-          gap: 1.25rem;
+          gap: 0.95rem;
+          overflow: hidden;
         }
 
         .brand-block p,
@@ -262,7 +265,7 @@ export default function AdminPage() {
 
         .brand-block h1 {
           font-family: Georgia, serif;
-          font-size: 1.8rem;
+          font-size: 1.35rem;
         }
 
         .side-header {
@@ -279,7 +282,7 @@ export default function AdminPage() {
         }
 
         .side-header strong {
-          font-size: 1.6rem;
+          font-size: 1.25rem;
         }
 
         .add-btn {
@@ -289,24 +292,27 @@ export default function AdminPage() {
           border-radius: 999px;
           cursor: pointer;
           font-weight: 800;
-          padding: 0.6rem 0.95rem;
+          font-size: 0.8rem;
+          padding: 0.48rem 0.8rem;
         }
 
-        .category-list {
+        .admin-category-list {
           display: flex;
           flex-direction: column;
-          gap: 0.65rem;
+          gap: 0.45rem;
           overflow-y: auto;
+          padding-right: 0.15rem;
         }
 
         .cat-row {
           display: grid;
           grid-template-columns: minmax(0, 1fr) auto;
-          gap: 0.5rem;
-          padding: 0.35rem;
+          gap: 0.35rem;
+          padding: 0.25rem;
           border: 1px solid rgba(255, 255, 255, 0.07);
-          border-radius: 12px;
+          border-radius: 10px;
           background: rgba(255, 255, 255, 0.03);
+          min-width: 0;
         }
 
         .cat-row.active {
@@ -324,13 +330,15 @@ export default function AdminPage() {
 
         .cat-btn {
           overflow: hidden;
+          min-width: 0;
           border: none;
           border-radius: 9px;
           background: transparent;
           color: white;
           cursor: pointer;
+          font-size: 0.84rem;
           font-weight: 700;
-          padding: 0.65rem 0.75rem;
+          padding: 0.52rem 0.6rem;
           text-align: left;
           text-overflow: ellipsis;
           white-space: nowrap;
@@ -342,9 +350,10 @@ export default function AdminPage() {
           background: rgba(239, 68, 68, 0.12);
           color: #fecaca;
           cursor: pointer;
-          font-size: 0.72rem;
+          font-size: 0.68rem;
           font-weight: 800;
-          padding: 0.55rem 0.65rem;
+          padding: 0.42rem 0.5rem;
+          white-space: nowrap;
         }
 
         .cat-btn:disabled,
@@ -360,13 +369,15 @@ export default function AdminPage() {
           border-radius: 12px;
           color: #f4efe6;
           cursor: pointer;
-          padding: 0.8rem 1rem;
+          font-size: 0.86rem;
+          padding: 0.68rem 0.85rem;
         }
 
         main {
           flex: 1;
-          padding: 2rem;
+          padding: 1.5rem;
           overflow-y: auto;
+          min-width: 0;
         }
 
         .topbar {
@@ -377,15 +388,15 @@ export default function AdminPage() {
           align-items: center;
           justify-content: space-between;
           gap: 1rem;
-          margin: -2rem -2rem 1.5rem;
-          padding: 1.5rem 2rem;
+          margin: -1.5rem -1.5rem 1rem;
+          padding: 1rem 1.5rem;
           background: rgba(13, 13, 22, 0.9);
           border-bottom: 1px solid rgba(255, 255, 255, 0.08);
           backdrop-filter: blur(16px);
         }
 
         .topbar h2 {
-          font-size: 1.75rem;
+          font-size: 1.35rem;
         }
 
         .add {
@@ -394,8 +405,9 @@ export default function AdminPage() {
           border-radius: 999px;
           color: #17120a;
           cursor: pointer;
+          font-size: 0.86rem;
           font-weight: 800;
-          padding: 0.75rem 1rem;
+          padding: 0.62rem 0.9rem;
           white-space: nowrap;
         }
 
@@ -427,18 +439,18 @@ export default function AdminPage() {
         .item-row {
           display: flex;
           flex-direction: column;
-          gap: 1rem;
-          margin-bottom: 1rem;
+          gap: 0.75rem;
+          margin-bottom: 0.75rem;
           background: rgba(22, 22, 42, 0.85);
           border: 1px solid rgba(255, 255, 255, 0.07);
-          border-radius: 16px;
-          padding: 1rem;
+          border-radius: 12px;
+          padding: 0.85rem;
         }
 
         .item-main {
           display: grid;
-          grid-template-columns: minmax(0, 1fr) 140px auto;
-          gap: 0.8rem;
+          grid-template-columns: minmax(0, 1fr) 120px auto;
+          gap: 0.65rem;
           align-items: end;
         }
 
@@ -447,7 +459,7 @@ export default function AdminPage() {
           flex-direction: column;
           gap: 0.35rem;
           color: #8c8790;
-          font-size: 0.68rem;
+          font-size: 0.62rem;
           font-weight: 800;
           letter-spacing: 0.08em;
           text-transform: uppercase;
@@ -461,12 +473,13 @@ export default function AdminPage() {
           border-radius: 10px;
           color: #f4efe6;
           font: inherit;
-          padding: 0.8rem 0.85rem;
+          font-size: 0.9rem;
+          padding: 0.66rem 0.72rem;
           text-transform: none;
         }
 
         textarea {
-          min-height: 76px;
+          min-height: 64px;
           resize: vertical;
         }
 
@@ -476,27 +489,72 @@ export default function AdminPage() {
           border-radius: 10px;
           color: #fecaca;
           cursor: pointer;
+          font-size: 0.84rem;
           font-weight: 800;
-          padding: 0.82rem 1rem;
+          padding: 0.68rem 0.82rem;
         }
 
         @media (max-width: 760px) {
           .admin-wrap {
             flex-direction: column;
+            overflow: hidden;
           }
 
           aside {
             width: 100%;
-            max-height: 42vh;
+            min-width: 0;
+            max-height: none;
+            padding: 0.9rem;
+            border-right: 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            flex-shrink: 0;
+          }
+
+          .brand-block {
+            display: none;
+          }
+
+          .side-header {
+            margin-bottom: 0;
+          }
+
+          .admin-category-list {
+            display: grid;
+            grid-auto-columns: minmax(170px, 220px);
+            grid-auto-flow: column;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 0 0 0.2rem;
+          }
+
+          .cat-row {
+            grid-template-columns: minmax(0, 1fr) auto;
+          }
+
+          .del-btn {
+            font-size: 0;
+            width: 2rem;
+          }
+
+          .del-btn::before {
+            content: "×";
+            font-size: 1rem;
+            line-height: 1;
+          }
+
+          .del-btn:disabled::before {
+            content: "...";
+            font-size: 0.7rem;
           }
 
           main {
-            padding: 1.25rem;
+            padding: 1rem;
+            flex: 1;
           }
 
           .topbar {
-            margin: -1.25rem -1.25rem 1.25rem;
-            padding: 1rem 1.25rem;
+            margin: -1rem -1rem 1rem;
+            padding: 0.85rem 1rem;
           }
 
           .item-main {
